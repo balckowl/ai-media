@@ -1,0 +1,18 @@
+---
+import Button from "../atoms/Button.astro";
+import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+
+type Props = {
+    text: string;
+    url: string;
+};
+
+const { text, url } = Astro.props;
+---
+
+<Button url={url}>
+    <div class="flex">
+        <span class="hidden sm:block">{text}について</span>他の記事を読む
+    </div>
+</Button>

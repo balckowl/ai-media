@@ -1,0 +1,24 @@
+---
+import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import Container from "../../layouts/Container.astro";
+---
+
+<header class="h-[60px] border-b-[1px] bg-white">
+    <Container>
+        <div class="flex items-center justify-between h-[60px] px-[14px]">
+            <a href="/">
+                <img
+                    src="/logo.png"
+                    alt="logo"
+                    width={100}
+                    height={30}
+                    class="mb-[14px]"
+                />
+            </a>
+            <a href="/search" class="mx-2">
+                <FontAwosomeIcon icon={faSearch} params={{styles: {"font-size": "18px", "color": "#aaa"}}}/>
+            </a>
+        </div>
+    </Container>
+</header>

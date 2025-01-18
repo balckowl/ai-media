@@ -1,0 +1,16 @@
+---
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import FontAwosomeIcon from './FontAwosomeIcon.astro';
+
+type Props = {
+    url: string;
+}
+
+const { url } = Astro.props;  
+---
+<a href={url}>
+    <div class="flex border-[1px] h-[40px] items-center bg-white rounded-full px-5 gap-3">
+        <slot />
+        <FontAwosomeIcon icon={faAngleRight} />
+    </div>
+</a>

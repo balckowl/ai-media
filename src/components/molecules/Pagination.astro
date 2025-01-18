@@ -1,0 +1,33 @@
+---
+import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+
+type Props = {
+    page: number;
+    totalPages: number;
+    nextHref?: string;
+    prevHref?: string;
+};
+
+const { page, totalPages, nextHref = `/page/${page+1}`, prevHref = `/page/${page-1}` } = Astro.props;
+---
+
+<div
+    class="rounded-full flex h-[40px] items-center justify-around border-[1px] bg-white"
+>
+    {
+        page > 1 && (
+            <a href={prevHref} class="w-[60px] border-r-[1px] h-full grid place-content-center">
+                <FontAwosomeIcon icon={faAngleLeft} />
+            </a>
+        )
+    }
+    <div class="w-[100px] grid place-content-center h-full">{page}</div>
+    {
+        page < totalPages && (
+            <a href={nextHref} class="w-[60px] border-l-[1px] h-full grid place-content-center">
+                <FontAwosomeIcon icon={faAngleRight} />
+            </a>
+        )
+    }
+</div>

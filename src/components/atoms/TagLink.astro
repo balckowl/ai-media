@@ -1,0 +1,14 @@
+---
+type Props = {
+    id: string;
+    name: string;
+};
+
+const { id, name } = Astro.props;
+---
+
+<div class="border-[1px] flex-shrink-0 w-max bg-white px-5 py-2 rounded-full">
+    <a href={`/tags/${id}/1`}>
+        # {name}
+    </a>
+</div>

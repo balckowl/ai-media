@@ -1,0 +1,77 @@
+---
+export const prerender = true;
+import Tag from "../../components/atoms/Tag.astro";
+import MoreBlogButton from "../../components/molecules/MoreBlogButton.astro";
+import Container from "../../layouts/Container.astro";
+import Layout from "../../layouts/Layout.astro";
+import type { Blog } from "../../lib/microcms";
+import { client } from "../../lib/microcms";
+import { format } from "date-fns";
+import styles from './blog.module.css';
+
+export async function getStaticPaths() {
+    const response = await client.getList<Blog>({
+        endpoint: "blog",
+        queries: { fields: ["id"] },
+    });
+
+    return response.contents.map((post: { id: string }) => ({
+        params: {
+            id: post.id,
+        },
+    }));
+}
+
+const { id } = Astro.params;
+const post = await client.get<Blog>({
+    endpoint: "blog",
+    contentId: id,
+});
+---
+
+<Layout title={post.title} description={post.description} thumbnailUrl={post.thumbnail?.url as string}>
+    <div class="bg-[#F9FAFB] pb-[20px]">
+        <Container>
+            {post.thumbnail && <div class="bg-[#eee]">
+                <img
+                    src={post.thumbnail.url}
+                    class="w-full sm:h-[400px] sm:object-contain"
+                />
+            </div>}
+            <div
+                class="bg-white pt-7 rounded-br-[10px] rounded-bl-[10px] mb-[20px] sm:px-10 px-3"
+            >
+                <div class="mb-[20px] pb-[20px] border-b">
+                    <div class="flex gap-2 mb-[5px]">
+                        {post.tags.map((tag) => <Tag name={tag.name} id={tag.id}/>)}
+                    </div>
+                    <h2 class="sm:text-[2rem] text-[24px] font-bold mb-[5px]">
+                        {post.title}
+                    </h2>
+                    <time datetime={post.publishedAt} class="sm:text-[1rem] text-[0.8rem] text-gray-500"
+                        >{format(post.publishedAt, "yyyy-MM-dd")}</time
+                    >
+                </div>
+                <div class="pb-[20px] min-h-[200px]">
+                    <div 
+                     class={`${styles.post}`}
+                     set:html={post.content} 
+                    />
+                </div>
+                <div class="border-t sm:h-[200px] h-[250px] sm:justify-start justify-center flex sm:flex-row flex-col items-center gap-5 sm:pt-0">
+                    <img
+                        src={post.author.icon.url}
+                        class="size-[100px] rounded-full"
+                    />
+                    <div class="space-y-3">
+                        <h3 class="text-[20px]">{post.author.name}</h3>
+                        <p>{post.author.bio}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <MoreBlogButton url={`/tags/${post.tags[0].id}/1`} text={post.tags[0].name}/>
+            </div>
+        </Container>
+    </div>
+</Layout>

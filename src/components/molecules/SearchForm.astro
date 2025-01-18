@@ -1,0 +1,44 @@
+---
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import Button from "../atoms/Button.astro";
+import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
+import Input from "../atoms/Input.astro";
+
+type Props = {
+    q: string;
+};
+
+const { q } = Astro.props;
+---
+
+<form>
+    <div class="flex flex-col gap-4">
+        <div class="relative">
+            <Input
+                type="text"
+                name="q"
+                value={q}
+                placeholder="キーワードを入力..."
+            />
+            <FontAwosomeIcon
+                icon={faSearch}
+                params={{
+                    styles: {
+                        "font-size": "18px",
+                        color: "#aaa",
+                        position: "absolute",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        left: "15px",
+                    },
+                }}
+            />
+        </div>
+        <button
+            type="submit"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
+        >
+            検索
+        </button>
+    </div>
+</form>

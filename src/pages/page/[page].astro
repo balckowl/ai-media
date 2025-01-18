@@ -1,0 +1,47 @@
+---
+export const prerender = true;
+import { client, type Blog, type Tag } from "../../lib/microcms";
+import BlogTemplate from "../../components/templates/blogTemplate.astro";
+
+export async function getStaticPaths() {
+  const POSTS_PER_PAGE = 12;
+  const response = await client.get({
+    endpoint: "blog",
+    queries: { limit: 0 },
+  });
+
+  const totalPages = Math.ceil(response.totalCount / POSTS_PER_PAGE);
+
+  return Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => ({
+    params: { page: String(page) },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const POSTS_PER_PAGE = 12;
+const response = await client.getList<Blog>({
+  endpoint: "blog",
+  queries: {
+    offset: (page - 1) * POSTS_PER_PAGE,
+    limit: POSTS_PER_PAGE,
+    orders: "-publishedAt",
+  },
+});
+
+const res = await client.getList<Tag>({
+  endpoint: "tags",
+});
+
+const { contents: posts, totalCount } = response;
+const { contents: tagContent } = res;
+const totalPages = Math.ceil(totalCount / POSTS_PER_PAGE);
+---
+<BlogTemplate
+  title="記事一覧"
+  page={page}
+  posts={posts}
+  tagContent={tagContent}
+  totalPages={totalPages}
+  thumbnailUrl={`${import.meta.env.SITE_URL}/ogp.png`}
+/>

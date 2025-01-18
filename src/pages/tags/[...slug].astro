@@ -1,0 +1,73 @@
+---
+export const prerender = true; 
+import BlogTemplate from "../../components/templates/blogTemplate.astro";
+import { client, type Tag } from "../../lib/microcms";
+
+export async function getStaticPaths() {
+    const tagsResponse = await client.get({
+        endpoint: "tags",
+    });
+
+    const paths = [];
+
+    for (const tag of tagsResponse.contents) {
+        const blogResponse = await client.get({
+            endpoint: "blog",
+            queries: {
+                filters: `tags[contains]${tag.id}`,
+            },
+        });
+
+        const totalPages = Math.ceil(blogResponse.totalCount / 3);
+        for (let page = 1; page <= totalPages; page++) {
+            paths.push({
+                params: { slug: `/${tag.id}/${page}` },
+                props: { tag: tag.id, page },
+            });
+        }
+    }
+
+    return paths;
+}
+
+const { tag, page } = Astro.props;
+console.log(tag, page);
+
+const pageSize = 12;
+const offset = (page - 1) * pageSize;
+
+const response = await client.get({
+    endpoint: "blog",
+    queries: {
+        filters: `tags[contains]${tag}`,
+        limit: pageSize,
+        offset: offset,
+        orders: "-publishedAt",
+    },
+});
+
+const tagResponse = await client.get<Tag>({
+    endpoint: "tags",
+    contentId: tag,
+});
+
+const { contents: posts } = response;
+const res = await client.getList<Tag>({
+  endpoint: "tags",
+});
+
+const { contents: tagContent } = res;
+
+const totalPages = Math.ceil(response.totalCount / pageSize);
+---
+
+<BlogTemplate
+    title={tagResponse.name}
+    page={page}
+    posts={posts}
+    tagContent={tagContent}
+    totalPages={totalPages}
+    prevHref={`/tags/${tag}/${page - 1}`}
+    nextHref={`/tags/${tag}/${page + 1}`}
+    thumbnailUrl={`${import.meta.env.SITE_URL}/ogp.png`}
+/>

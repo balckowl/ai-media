@@ -1,0 +1,32 @@
+---
+export const prerender = true;
+import BlogTemplate from "../components/templates/blogTemplate.astro";
+import { client, type Tag } from "../lib/microcms";
+
+const POSTS_PER_PAGE = 12;
+const response = await client.get({
+    endpoint: "blog",
+    queries: {
+        offset: 0,
+        limit: POSTS_PER_PAGE,
+        orders: "-publishedAt",
+    },
+});
+
+const res = await client.getList<Tag>({
+  endpoint: "tags",
+});
+
+const { contents: posts, totalCount } = response;
+const { contents: tagContent } = res;
+const totalPages = Math.ceil(totalCount / POSTS_PER_PAGE);
+---
+
+<BlogTemplate 
+    title="最新記事"
+    page={1} 
+    posts={posts} 
+    tagContent={tagContent} 
+    totalPages={totalPages}
+    thumbnailUrl={`${import.meta.env.SITE_URL}/ogp.png`}
+/>

@@ -1,0 +1,29 @@
+---
+export const prerender = true;
+import Button from "../components/atoms/Button.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="404 Not Found" description="お探しのページは見つかりませんでした。" thumbnailUrl={`${import.meta.env.SITE_URL}/ogp.png`}>
+    <div
+        class="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center pb-[45px] bg-[#F9FAFB]"
+    >
+        <div class="text-[4rem] font-bold">404</div>
+        <p>お探しのページは見つかりませんでした。</p>
+        <picture>
+            <source
+                srcset="/reading-side.png"
+                media="(max-width: 768px)"
+                width={250}
+            />
+            <img
+                src="/reading-side.png"
+                alt="Reading side illustration"
+                width={350}
+            />
+        </picture>
+        <Button url="/">
+            トップに戻る
+        </Button>
+    </div>
+</Layout>

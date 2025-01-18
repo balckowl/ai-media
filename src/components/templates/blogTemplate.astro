@@ -1,0 +1,55 @@
+---
+import Container from "../../layouts/Container.astro";
+import Layout from "../../layouts/Layout.astro";
+import type { Blog, Tag } from "../../lib/microcms";
+import Heading from "../atoms/Heading.astro";
+import TagLink from "../atoms/TagLink.astro";
+import Pagination from "../molecules/Pagination.astro";
+import Card from "../organisms/Card.astro";
+
+type Props = {
+  page: number;
+  posts: Blog[];
+  tagContent: Tag[];
+  totalPages: number;
+  title: string;
+  prevHref?: string;
+  nextHref?: string;
+  thumbnailUrl: string;
+};
+
+const { page, posts, tagContent, totalPages, title, prevHref, nextHref, thumbnailUrl } =
+  Astro.props;
+---
+
+<Layout title={title} description={`${title}の記事一覧ページです。`} thumbnailUrl={thumbnailUrl}>
+  <div class="pt-[30px] pb-[30px] bg-[#F9FAFB] px-3 overflow-hidden min-h-[calc(100vh-60px)]">
+  <Container>
+    <div class="mb-[20px]">
+      <Heading title={title} />
+    </div>
+    <div class="mb-[17px] flex gap-2 overflow-x-scroll scrollbar-hide">
+      {tagContent.map((tag) => <TagLink id={tag.id} name={tag.name} />)}
+    </div>
+    <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2 mb-[17px]">
+      {
+        posts.map((post) => (
+          <Card
+            id={post.id}
+            title={post.title}
+            date={post.publishedAt}
+            thumbnailUrl={post.thumbnail?.url as string}
+          />
+        ))
+      }
+    </div>
+    <div class="flex justify-center">
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        prevHref={prevHref}
+        nextHref={nextHref}
+      />
+    </div>
+  </Container>
+</Layout>

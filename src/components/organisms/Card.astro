@@ -1,0 +1,29 @@
+---
+import { format } from "date-fns";
+
+type Props = {
+    id: string;
+    title: string;
+    date: string;
+    thumbnailUrl: string;
+};
+
+const { id, title, date, thumbnailUrl } = Astro.props;
+---
+
+<div>
+    <a href={`/blog/${id}`}>
+        <img
+            src={thumbnailUrl}
+            alt=""
+            height={200}
+            class="w-full rounded-[10px] mb-[5px]"
+        />
+        <h3 class="text-[1.1rem] font-bold">{title}</h3>
+        <div>
+            <time datetime={date} class="text-[0.8rem]">
+                {format(date, "yyyy-MM-dd")}
+            </time>
+        </div>
+    </a>
+</div>

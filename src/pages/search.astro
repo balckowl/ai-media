@@ -1,0 +1,91 @@
+---
+export const prerender = false;
+import Heading from "../components/atoms/Heading.astro";
+import Container from "../layouts/Container.astro";
+import Layout from "../layouts/Layout.astro";
+import SearchForm from "../components/molecules/SearchForm.astro";
+import { client, type Blog } from "../lib/microcms";
+import Card from "../components/organisms/Card.astro";
+import Pagination from "../components/molecules/Pagination.astro";
+
+const ITEMS_PER_PAGE = 12; // 1ページあたりのアイテム数
+
+// クエリパラメータから検索キーワードとページ番号を取得
+const query = Astro.url.searchParams.get("q") || "";
+const page = parseInt(Astro.url.searchParams.get("page") || "1", 10);
+
+// 検索結果とページネーション用の変数を初期化
+let searchResults: Blog[] = [];
+let hasSearched = false;
+let totalCount = 0;
+
+if (query) {
+    const response = await client.get({
+        endpoint: "blog",
+        queries: {
+            filters: `title[contains]${query}`,
+            orders: "-publishedAt",
+            limit: ITEMS_PER_PAGE,
+            offset: (page - 1) * ITEMS_PER_PAGE, // ページに応じたオフセットを計算
+        },
+    });
+    searchResults = response.contents;
+    totalCount = response.totalCount; // 総アイテム数を取得
+    hasSearched = true;
+}
+
+// 総ページ数を計算
+const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+---
+
+<Layout title="記事検索" description="記事検索ページです。" thumbnailUrl={`${import.meta.env.SITE_URL}/ogp.png`}>
+    <div class="pt-[30px] pb-[30px] min-h-[calc(100vh-60px)] bg-[#F9FAFB] px-3">
+        <Container>
+            <div class="mb-[30px]">
+                <Heading title="記事検索" />
+            </div>
+            <div class="mb-[17px]">
+                <SearchForm q={query} />
+            </div>
+            <div>
+                {
+                    hasSearched && searchResults.length === 0 && (
+                        <div class="text-center py-8">
+                            <p class="text-gray-600 text-lg">
+                                「{query}」に一致する記事が見つかりませんでした。
+                            </p>
+                            <p class="text-gray-500 mt-2">
+                                別のキーワードで検索してみてください。
+                            </p>
+                        </div>
+                    )
+                }
+                <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2">
+                    {
+                        searchResults.map((blog) => (
+                            <Card
+                                title={blog.title}
+                                date={blog.publishedAt}
+                                id={blog.id}
+                                thumbnailUrl={blog.thumbnail?.url as string}
+                            />
+                        ))
+                    }
+                </div>
+            </div>
+
+            {
+                hasSearched && totalPages > 1 && (
+                    <div class="flex justify-center">
+                        <Pagination
+                            page={page}
+                            totalPages={totalPages}
+                            prevHref={`?q=${query}&page=${page - 1}`}
+                            nextHref={`?q=${query}&page=${page + 1}`}
+                        />
+                    </div>
+                )
+            }
+        </Container>
+    </div>
+</Layout>
