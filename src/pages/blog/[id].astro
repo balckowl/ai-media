@@ -2,12 +2,12 @@
 export const prerender = true;
 import Tag from "../../components/atoms/Tag.astro";
 import MoreBlogButton from "../../components/molecules/MoreBlogButton.astro";
-import Container from "../../layouts/Container.astro";
 import Layout from "../../layouts/Layout.astro";
 import type { Blog } from "../../lib/microcms";
 import { client } from "../../lib/microcms";
 import { format } from "date-fns";
 import styles from './blog.module.css';
+import ArticleContainer from "../../layouts/ArticleContainer.astro";
 
 export async function getStaticPaths() {
     const response = await client.getList<Blog>({
@@ -31,11 +31,11 @@ const post = await client.get<Blog>({
 
 <Layout title={post.title} description={post.description} thumbnailUrl={post.thumbnail?.url as string}>
     <div class="bg-[#F9FAFB] pb-[20px]">
-        <Container>
+        <ArticleContainer>
             {post.thumbnail && <div class="bg-[#eee]">
                 <img
                     src={post.thumbnail.url}
-                    class="w-full sm:h-[400px] sm:object-contain"
+                    class="w-full"
                 />
             </div>}
             <div
@@ -72,6 +72,6 @@ const post = await client.get<Blog>({
             <div class="flex justify-center">
                 <MoreBlogButton url={`/tags/${post.tags[0].id}/1`} text={post.tags[0].name}/>
             </div>
-        </Container>
+        </ArticleContainer>
     </div>
 </Layout>
