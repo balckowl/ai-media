@@ -1,0 +1,16 @@
+---
+import type { IconLookup, IconName } from "@fortawesome/free-solid-svg-icons";
+import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
+
+type Props = {
+    text: string;
+    icon: IconName | IconLookup;
+};
+
+const { text, icon } = Astro.props;
+---
+
+<div class="flex gap-2 items-center">
+    <FontAwosomeIcon icon={icon} />
+    <h3 class="font-bold">{text}</h3>
+</div>

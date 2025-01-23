@@ -1,0 +1,18 @@
+---
+import type { IconLookup, IconName } from "@fortawesome/free-solid-svg-icons";
+import SidebarHeading from "./SidebarHeading.astro";
+
+
+type Props = {
+    text: string;
+    icon: IconName | IconLookup;
+}
+
+const { text, icon } = Astro.props;
+---
+<div class="order-2 border-bottom bg-white sticky top-0 left-0 h-max rounded-md shadow-sm lg:block hidden">
+    <div class="border-b p-3">
+        <SidebarHeading text={text} icon={icon}/>
+    </div>
+    <slot />
+</div>
