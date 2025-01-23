@@ -10,6 +10,7 @@ export type Blog = {
   title: string;
   description: string;
   content: string;
+  markdown: string;
   tags: Tag[];
   thumbnail?: {
     url: string;

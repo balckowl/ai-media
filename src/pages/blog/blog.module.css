@@ -1,5 +1,5 @@
 .post h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     padding-bottom: 0.5rem;
     margin-top: 1.5rem;
     margin-bottom: 1rem;
@@ -9,7 +9,7 @@
 }
 
 .post h2 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     margin-top: 1.5rem;
     margin-bottom: 1rem;
     color: #333;
@@ -17,7 +17,7 @@
 }
 
 .post h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-top: 1.5rem;
     margin-bottom: 1rem;
     color: #333;
@@ -26,27 +26,47 @@
 
 .post p {
     line-height: 2.0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     color: #555;
 }
 
 .post ul{
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     list-style-type: disc;
     list-style-position: inside;
 }
 
 .post ol{
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     list-style-type: decimal;
     list-style-position: inside;
 }
 
 .post li{
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 .post a{
     color: #007bff;
     text-decoration: none;
+}
+
+.post .link-card{
+    border: 2px solid black;
+}
+
+.post pre{
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.post code{
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .post code{
+        font-size: 0.8rem;
+    }
+    
 }

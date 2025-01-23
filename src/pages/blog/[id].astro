@@ -6,8 +6,14 @@ import Layout from "../../layouts/Layout.astro";
 import type { Blog } from "../../lib/microcms";
 import { client } from "../../lib/microcms";
 import { format } from "date-fns";
-import styles from './blog.module.css';
-import ArticleContainer from "../../layouts/ArticleContainer.astro";
+import styles from "./blog.module.css";
+import "highlight.js/styles/github-dark.css";
+import { markdownToHtml } from "../../lib/markdown";
+import Container from "../../layouts/Container.astro";
+import TableOfContents from "../../components/organisms/TableOfContents.astro";
+import SiderbarAuthor from "../../components/organisms/SiderbarAuthor.astro";
+import DummyAd from "../../components/molecules/DummyAd.astro";
+import RelatedArticles from "../../components/organisms/RelatedArticles.astro";
 
 export async function getStaticPaths() {
     const response = await client.getList<Blog>({
@@ -27,51 +33,171 @@ const post = await client.get<Blog>({
     endpoint: "blog",
     contentId: id,
 });
+
+const blog = await client.getList<Blog>({
+    endpoint: "blog",
+    queries: {
+        limit: 4,
+        orders: "-publishedAt",
+        filters: `id[not_equals]${id}`,
+    },
+});
+
+const html = markdownToHtml(post.markdown);
 ---
 
-<Layout title={post.title} description={post.description} thumbnailUrl={post.thumbnail?.url as string}>
+<Layout
+    title={post.title}
+    description={post.description}
+    thumbnailUrl={post.thumbnail?.url as string}
+>
     <div class="bg-[#F9FAFB] pb-[20px]">
-        <ArticleContainer>
-            {post.thumbnail && <div class="bg-[#eee]">
-                <img
-                    src={post.thumbnail.url}
-                    class="w-full"
-                />
-            </div>}
-            <div
-                class="bg-white pt-7 rounded-br-[10px] rounded-bl-[10px] mb-[20px] sm:px-10 px-3"
-            >
-                <div class="mb-[20px] pb-[20px] border-b">
-                    <div class="flex gap-2 mb-[5px]">
-                        {post.tags.map((tag) => <Tag name={tag.name} id={tag.id}/>)}
+        <Container>
+            <div class="flex gap-3 pt-[20px]">
+                <div class="hidden lg:block w-[30%] order-2 space-y-3">
+                    <SiderbarAuthor
+                        name={post.author.name}
+                        desc={post.author.bio}
+                        icon={post.author.icon.url}
+                    />
+                    <div class="sticky top-0 left-0 space-y-3">
+                        <TableOfContents />
+                        <DummyAd />
                     </div>
-                    <h2 class="sm:text-[2rem] text-[24px] font-bold mb-[5px]">
-                        {post.title}
-                    </h2>
-                    <time datetime={post.publishedAt} class="sm:text-[1rem] text-[0.8rem] text-gray-500"
-                        >{format(post.publishedAt, "yyyy-MM-dd")}</time
+                </div>
+                <div class="lg:w-[70%] w-full">
+                    {
+                        post.thumbnail && (
+                            <div class="bg-[#eee]">
+                                <img src={post.thumbnail.url} class="w-full sm:rounded-tr-[10px] sm:rounded-tl-[10px]" />
+                            </div>
+                        )
+                    }
+                    <div
+                        class="bg-white pt-7 sm:rounded-br-[10px] sm:rounded-bl-[10px] mb-[20px] sm:px-8 px-4"
                     >
-                </div>
-                <div class="pb-[20px] min-h-[200px]">
-                    <div 
-                     class={`${styles.post}`}
-                     set:html={post.content} 
-                    />
-                </div>
-                <div class="border-t sm:h-[200px] h-[250px] sm:justify-start justify-center flex sm:flex-row flex-col items-center gap-5 sm:pt-0">
-                    <img
-                        src={post.author.icon.url}
-                        class="size-[100px] rounded-full"
-                    />
-                    <div class="space-y-3">
-                        <h3 class="text-[20px]">{post.author.name}</h3>
-                        <p>{post.author.bio}</p>
+                        <div class="mb-[20px] pb-[20px] border-b">
+                            <div class="flex gap-2 mb-[5px]">
+                                {
+                                    post.tags.map((tag) => (
+                                        <Tag name={tag.name} id={tag.id} />
+                                    ))
+                                }
+                            </div>
+                            <h2
+                                class="sm:text-[2rem] text-[20px] font-bold mb-[5px]"
+                            >
+                                {post.title}
+                            </h2>
+                            <time
+                                datetime={post.publishedAt}
+                                class="sm:text-[1rem] text-[0.8rem] text-gray-500"
+                                >{format(post.publishedAt, "yyyy-MM-dd")}</time
+                            >
+                        </div>
+                        <div class="pb-[20px] min-h-[200px]">
+                            <div
+                                id="content"
+                                class={`${styles.post}`}
+                                set:html={html}
+                            />
+                        </div>
+                        <div
+                            class="border-t sm:h-[200px] h-[250px] sm:justify-start justify-center flex sm:flex-row flex-col items-center gap-5 sm:pt-0"
+                        >
+                            <img
+                                src={post.author.icon.url}
+                                class="size-[100px] rounded-full"
+                            />
+                            <div class="space-y-3">
+                                <h3 class="text-[20px]">{post.author.name}</h3>
+                                <p>{post.author.bio}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-[20px]">
+                        <RelatedArticles blogs={blog.contents} />
+                    </div>
+                    <div class="flex justify-center">
+                        <MoreBlogButton
+                            url={`/tags/${post.tags[0].id}/1`}
+                            text={post.tags[0].name}
+                        />
                     </div>
                 </div>
             </div>
-            <div class="flex justify-center">
-                <MoreBlogButton url={`/tags/${post.tags[0].id}/1`} text={post.tags[0].name}/>
-            </div>
-        </ArticleContainer>
+        </Container>
     </div>
 </Layout>
+
+<style is:global>
+    /* 現在アクティブなリンク */
+    .link-card {
+        border: 1px solid #e2e8f0;
+        margin-bottom: 1.5rem;
+        border-radius: 0.5rem;
+    }
+
+    .link-card-title {
+        margin-block: 0px !important;
+        font-weight: 600;
+        color: black !important;
+        line-height: 1.5 !important;
+    }
+
+    .link-card-description {
+        margin-block: 0px !important;
+    }
+
+    .link-card-description {
+        color: #bbb !important;
+        font-size: 0.8rem;
+    }
+
+    .link-card-content {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .link-card-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0.8rem;
+    }
+    .link-card-image {
+        order: 2;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+
+    .link-card-link {
+        margin-bottom: 0px !important;
+        font-size: 0.8rem !important;
+        color: #bbb !important;
+    }
+
+    .link-card-title,
+    .link-card-description,
+    .link-card-link {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 1; /* 表示する行数 */
+        word-wrap: break-word; /* 長い単語を折り返す */
+        overflow-wrap: break-word; /* 長い単語を折り返す（モダンなプロパティ） */
+    }
+
+    .link-card-title {
+        -webkit-line-clamp: 2;
+    }
+
+    @media (max-width: 768px) {
+        .link-card-image {
+            height: 100px;
+            width: 100px;
+        }
+    }
+</style>
