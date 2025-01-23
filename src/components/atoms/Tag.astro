@@ -7,7 +7,7 @@ type Props = {
 const { name, id } = Astro.props;
 ---
 
-<div class="w-max px-4 py-1 border rounded-full">
+<div class="w-max sm:px-4 px-3 py-1 border rounded-full sm:text-[1rem] text-[0.8rem]">
     <a href={`/tags/${id}/1`}>
         # {name}
     </a>
