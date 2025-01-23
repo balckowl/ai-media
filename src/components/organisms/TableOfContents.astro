@@ -1,0 +1,91 @@
+---
+import { faListUl } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "../molecules/Sidebar.astro";
+
+---
+<Sidebar icon={faListUl} text="目次">
+    <div class="toc p-3"></div>
+</Sidebar>
+
+<style is:global>
+    .toc-list-item {
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .toc-link {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 0.2rem
+    }
+
+    .toc-link{
+        color: #aaa; /* gray-900 */
+        font-size: 0.9rem; /* text-sm */
+    }
+
+    .toc-link.is-active{
+        font-weight: 600;
+        color: black;
+    }
+
+    .toc-link::before {
+        content: "";
+        position: absolute;
+        left: -1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.50rem; /* w-3 */
+        height: 0.50rem; /* h-3 */
+        border-radius: 50%;
+        /* border: 2px solid #d1d5db;  */
+        background-color: #d1d5db; 
+        transition:
+            background-color 0.2s ease-in-out,
+            border-color 0.2s ease-in-out;
+        z-index: 1; /* 丸を線の上に表示 */
+    }
+
+    .toc-link.is-active::before {
+        background-color: #faf710; /* primary */
+        border-color: #faf710; /* primary */
+        /* border: 2px solid #d1d5db;  */
+    }
+
+    /* 丸と丸を繋ぐ線 */
+    .toc-list-item::after {
+        content: "";
+        position: absolute;
+        left: calc(0.25rem - 1px); /* 丸の中心に合わせる */
+        top: 0.50rem; /* 現在の丸の中心から */
+        bottom: -0.50rem; /* 次の丸の上端まで */
+        width: 2px;
+        background-color: #d1d5db; /* gray-300 */
+    }
+
+    /* 最後のアイテムの線を非表示 */
+    .toc-list-item:last-child::after {
+        display: none;
+    }
+</style>
+
+<script>
+    import * as tocbot from "tocbot";
+
+    // Tocbotを初期化
+    tocbot.init({
+        tocSelector: ".toc", // 目次を表示する要素
+        contentSelector: "#content", // コンテンツのセレクター
+        headingSelector: "h1, h2, h3", // 対象となる見出し
+        listClass: "toc-list",
+        linkClass: "toc-link",
+        activeLinkClass: "is-active",
+        headingsOffset: 100,
+        scrollSmoothOffset: -100,
+        skipRendering: false,
+        onClick: (e) => {
+            e.preventDefault();
+            tocbot.refresh();
+        },
+    });
+</script>
