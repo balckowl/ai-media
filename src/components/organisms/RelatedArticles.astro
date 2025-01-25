@@ -5,34 +5,33 @@ import type { Blog } from "../../lib/microcms";
 import Card from "./Card.astro";
 
 type Props = {
-    blogs: Blog[]
-}
+    blogs: Blog[];
+};
 
 const { blogs } = Astro.props;
 ---
-<div class="bg-white sm:rounded-[10px]">
+
+<div class="bg-white sm:rounded-[10px] shadow-sm">
     <div class="border-b sm:px-8 p-4">
-        <SidebarHeading
-            icon={faLink}
-            text="関連記事"
-        />
+        <SidebarHeading icon={faLink} text="関連記事" />
     </div>
-    <div
-        class="grid sm:grid-cols-2 gap-3 grid-cols-1 sm:p-8 p-4"
-    >
+    <div class="grid sm:grid-cols-2 gap-3 grid-cols-1 sm:p-8 p-4">
         {
-            blogs.map((blog) => {
-                return (
-                    <Card
-                        title={blog.title}
-                        date={blog.publishedAt}
-                        thumbnailUrl={
-                            blog.thumbnail?.url as string
-                        }
-                        id={blog.id}
-                    />
-                );
-            })
+            blogs.length > 0 &&
+                blogs.map((blog) => {
+                    return (
+                        <Card
+                            title={blog.title}
+                            date={blog.publishedAt}
+                            thumbnailUrl={blog.thumbnail?.url as string}
+                            id={blog.id}
+                        />
+                    );
+                })
+        }
+        {
+            blogs.length === 0 &&
+                <p class="text-gray-300">関連記事はありません</p>
         }
     </div>
 </div>
