@@ -1,0 +1,61 @@
+---
+import { faShare } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "../molecules/Sidebar.astro";
+import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
+import {
+    faXTwitter,
+    faBluesky,
+} from "@fortawesome/free-brands-svg-icons";
+
+type Props = {
+    blogId: string;
+    title: string;
+};
+
+const { blogId, title } = Astro.props;
+---
+
+<Sidebar icon={faShare} text="共有">
+    <div class="p-3">
+        <div class="flex gap-1">
+            <a
+                href={`https://x.com/intent/tweet?text=${title}&url=${import.meta.env.SITE_URL}/blog/${blogId}`}
+                class="size-[40px] bg-black grid place-content-center rounded-[10px] border hover:translate-y-[-5px] transition-transform duration-300"
+                target="_blank"
+            >
+                <FontAwosomeIcon
+                    icon={faXTwitter}
+                    params={{
+                        styles: {
+                            color: "#fff",
+                            width: "17px",
+                            height: "17px",
+                        },
+                    }}
+                />
+            </a>
+            <a
+                href={`https://bsky.app/intent/compose?text=${title} + ${import.meta.env.SITE_URL}/blog/${blogId}`}
+                class="size-[40px] grid place-content-center rounded-[10px] border bg-[#1185fe] hover:translate-y-[-5px] transition-transform duration-300"
+                target="_blank"
+            >
+                <FontAwosomeIcon
+                    icon={faBluesky}
+                    params={{
+                        styles: {
+                            color: "#fff",
+                            width: "17px",
+                            height: "17px",
+                        },
+                    }}
+                />
+            </a>
+            <a 
+            href={`https://taittsuu.com/share?text=${title} + ${import.meta.env.SITE_URL}/blog/${blogId}`}
+            class="size-[40px] grid place-content-center rounded-[10px] border hover:translate-y-[-5px] transition-transform duration-300"
+            target="_blank">
+                <img src="/taittsuu.png" class="size-[27px]" alt="">
+            </a>
+        </div>
+    </div>
+</Sidebar>
