@@ -1,6 +1,6 @@
 ---
 import FontAwosomeIcon from "../atoms/FontAwosomeIcon.astro";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faBoxOpen, faSearch } from "@fortawesome/free-solid-svg-icons";
 import Container from "../../layouts/Container.astro";
 ---
 
@@ -16,9 +16,14 @@ import Container from "../../layouts/Container.astro";
                     class="mb-[14px]"
                 />
             </a>
-            <a href="/search" class="mx-2">
-                <FontAwosomeIcon icon={faSearch} params={{styles: {"font-size": "18px", "color": "#aaa"}}}/>
-            </a>
+            <div class="flex gap-3">
+                <a href="/tools" class="mx-2"> 
+                    <FontAwosomeIcon icon={faBoxOpen} params={{styles: {"font-size": "18px", "color": "#aaa"}}}/>
+                </a>
+                <a href="/search" class="mx-2">
+                    <FontAwosomeIcon icon={faSearch} params={{styles: {"font-size": "18px", "color": "#aaa"}}}/>
+                </a>
+            </div>
         </div>
     </Container>
 </header>
