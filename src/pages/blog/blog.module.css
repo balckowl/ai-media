@@ -1,7 +1,11 @@
+.post :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0;
+}
+
 .post h1 {
     font-size: 1.5rem;
     padding-bottom: 0.5rem;
-    margin-top: 1.5rem;
+    margin-top: 3.0rem;
     margin-bottom: 1rem;
     color: #333;
     font-weight: 600;
@@ -10,10 +14,12 @@
 
 .post h2 {
     font-size: 1.3rem;
-    margin-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    margin-top: 3.0rem;
     margin-bottom: 1rem;
     color: #333;
     font-weight: 600;
+    border-bottom: 1px solid #eee;
 }
 
 .post h3 {
@@ -25,48 +31,69 @@
 }
 
 .post p {
-    line-height: 2.0;
+    line-height: 1.9;
     margin-bottom: 0.9rem;
-    color: #555;
+    color: #333;
 }
 
-.post ul{
+.post ul {
     margin-bottom: 0.9rem;
     list-style-type: disc;
     list-style-position: inside;
 }
 
-.post ol{
+.post ol {
     margin-bottom: 0.9rem;
     list-style-type: decimal;
     list-style-position: inside;
 }
 
-.post li{
+.post li {
     margin-bottom: 0.4rem;
 }
 
-.post a{
+.post a {
     color: #007bff;
     text-decoration: none;
 }
 
-.post .link-card{
+.post .link-card {
     border: 2px solid black;
 }
 
-.post pre{
-    border-radius: 5px;
+.post pre {
     margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0 7px 7px 7px;
 }
 
-.post code{
+.post pre>code {
     border-radius: 5px;
+}
+
+.post code:not(pre code) {
+    background-color: #f5f5f5;
+    color: #fe5e5e;
+    padding: 0.2em 0.4em;
+    font-size:  0.85rem;
+    border-radius: 3px;
+}
+
+.post figcaption{
+    border-radius: 7px 7px 0 0;
+    background-color: #232323;
+    width: max-content;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {
-    .post code{
+    .post pre>code {
         font-size: 0.8rem;
     }
-    
+
+    .post figcaption{
+        font-size: 0.6rem;
+    }
 }
